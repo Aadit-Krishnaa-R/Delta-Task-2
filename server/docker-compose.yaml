@@ -1,0 +1,27 @@
+services:
+  pythonapp:
+    build: ./python/
+    command: sh -c "sleep 100s ; python3 ./data.py"
+    depends_on:
+      - mysql
+
+  mysql:
+    build: ./mysql/
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'db'
+      MYSQL_ROOT_PASSWORD: 'root'
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./backup:/var/lib/mysql
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 9000:80
+    environment:
+      - PMA_ARBITRARY=1
+volumes:
+  db-data:
+    driver: local
